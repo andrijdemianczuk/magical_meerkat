@@ -10,3 +10,7 @@ venv/
 
 # IDE
 .idea/
+
+# Build
+build/
+dist/

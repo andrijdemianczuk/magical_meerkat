@@ -3,10 +3,11 @@
 Claude Code checks these off as work completes. Keep this current between sessions — it's the continuity thread across evenings.
 
 ## Phase 1 — CLI scanner (weeks 1-6, ~30-40 hrs)
-- [ ] Scaffold package (`uv`, ruff, pytest, entry point)
+- [x] Scaffold package (`uv`, ruff, pytest) — `sentinel` installs editable; CLI entry point still pending
+- [x] Testbed: fixture schema, loader, corpus evaluator (added — prerequisite for everything below)
 - [ ] MCP JSON-RPC client: connect, list tools, call tool
-- [ ] Attack module interface (register, run, detect)
-- [ ] Attack 1: tool poisoning (malicious instructions in tool description)
+- [x] Attack module interface (register, `analyze`, passive/active mode — see D-002)
+- [x] Attack 1: tool poisoning (passive; proven against its vulnerable/clean pair)
 - [ ] Attack 2: tool shadowing
 - [ ] Attack 3: prompt injection via tool output
 - [ ] Attack 4: rug-pull (description changes after approval)

@@ -8,7 +8,8 @@
 ## Components
 - **Client** — thin MCP JSON-RPC wrapper. Isolates protocol details from attacks.
 - **Attack runner** — loads registered attack modules, executes against target, collects findings.
-- **Attacks** — each is a self-contained module. Contract: `name`, `owasp_mapping`, `run(client) -> Finding`, `detect(response) -> bool`.
+- **Attacks** — each is a self-contained module. Contract: `name`, `attack_class`, `mode`, `owasp`, `analyze(tool) -> Finding`. `mode` is `passive` (decided from `tools/list`, no side effects) or `active` (invokes tools, opt-in) — see D-002.
+- **Testbed** — labelled fixture corpus (`testbed/fixtures/`) plus loader and evaluator. Ground truth for detector development; yields a confusion matrix, not a vibe.
 - **Report** — aggregates findings into an OWASP-mapped scorecard.
 - **Proxy** (Phase 3) — sits between agent and server, logs attributed traffic, enforces policy.
 
