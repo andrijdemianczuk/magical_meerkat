@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from sentinel.attacks import Finding, for_class
+from sentinel.attacks import run as run_attack
 from sentinel.testbed.loader import Fixture, load_corpus
 
 
@@ -45,7 +46,7 @@ def evaluate(fixture: Fixture) -> Result | None:
     attacks = [a for a in for_class(fixture.attack_class) if a.mode == fixture.mode]
     if not attacks:
         return None
-    findings = tuple(a.analyze(tool) for a in attacks for tool in fixture.tools)
+    findings = tuple(f for a in attacks for f in run_attack(a, fixture.tools))
     return Result(fixture, any(f.detected for f in findings), findings)
 
 

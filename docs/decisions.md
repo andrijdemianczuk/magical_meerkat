@@ -42,3 +42,9 @@ Format per entry: **Decision** / **Context** / **Alternatives rejected** / **Tra
 - **Alternatives rejected:** Code review alone (this is exactly the shortcut a tired evening takes); randomising canaries per run (raises the cost of cheating without preventing it).
 - **Tradeoff accepted:** One extra test per active attack, and the canary's payoff is deferred until an agent-in-the-loop harness exists.
 
+## D-007: Attacks declare `tool` or `surface` scope
+- **Decision:** A second axis alongside `mode`. `tool` attacks judge one tool via `analyze(tool)`; `surface` attacks judge the whole advertised set via `analyze_surface(tools)`. `attacks.run()` dispatches so callers never branch on it.
+- **Context:** Shadowing broke the per-tool contract on contact. Neither `send_email` nor `send_emai1` is suspicious alone — the attack exists only in the relationship between them, and a detector that can see one tool at a time cannot see it at all. Predicted during planning; confirmed on the first attempt to write it.
+- **Alternatives rejected:** Passing siblings into `analyze()` as an extra argument (every tool-scoped attack pays for a parameter it ignores, and one finding gets emitted per tool instead of per pair); a separate surface-attack registry (two discovery paths, and the CLI has to know which is which).
+- **Tradeoff accepted:** Two call shapes to keep straight, and `Finding.tool` becomes "the tool this is anchored on" rather than "the tool analyzed". Surface findings pick the aggressor where one is identifiable.
+

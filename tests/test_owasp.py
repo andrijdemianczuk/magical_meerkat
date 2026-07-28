@@ -46,6 +46,7 @@ def test_registering_an_attack_with_a_bad_mapping_fails():
         name = "bogus.attack"
         attack_class = "tool_poisoning"
         mode = "passive"
+        scope = "tool"
         owasp = ("MCP99:2025",)
 
         def analyze(self, tool):  # pragma: no cover - never reached

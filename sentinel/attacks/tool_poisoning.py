@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import Literal
 
 from sentinel.attacks import Finding, Mode, Signal, register
 from sentinel.attacks._text import first_match, sentences
@@ -73,6 +74,7 @@ class ToolPoisoning:
     name: str = "tool_poisoning.description_instructions"
     attack_class: str = "tool_poisoning"
     mode: Mode = "passive"
+    scope: Literal["tool"] = "tool"
     owasp: tuple[str, ...] = ("MCP03:2025", "ASI01:2026")
 
     def analyze(self, tool) -> Finding:

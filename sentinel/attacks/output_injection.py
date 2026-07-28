@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import Literal
 
 from sentinel.attacks import Finding, Mode, Signal, register
 from sentinel.attacks._text import first_match, sentences
@@ -92,6 +93,7 @@ class OutputInjection:
     name: str = "prompt_injection_via_output.response_instructions"
     attack_class: str = "prompt_injection_via_output"
     mode: Mode = "active"
+    scope: Literal["tool"] = "tool"
     # MCP06 (Intent Flow Subversion) is adjacent, but the mechanism here is
     # untrusted content entering the model's context, which is MCP10.
     owasp: tuple[str, ...] = ("MCP10:2025", "ASI01:2026")

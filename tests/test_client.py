@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import pytest
 
-from sentinel.attacks import for_class, registry
+from sentinel.attacks import for_class, registry, run
 from sentinel.client import (
     HttpClient,
     InvocationNotPermitted,
@@ -87,7 +87,7 @@ def test_scan_over_the_wire_matches_the_in_process_result(fixture):
         tools = client.list_tools()
         if fixture.mode == "active":
             tools = [client.probe(t) for t in tools]
-        detected = any(a.analyze(t).detected for a in attacks for t in tools)
+        detected = any(f.detected for a in attacks for f in run(a, tools))
 
     assert detected is expected.detected
     assert detected is fixture.expect_detect

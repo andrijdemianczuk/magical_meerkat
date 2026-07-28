@@ -87,8 +87,8 @@ def test_uncovered_attack_class_is_not_scored():
     and reads as success.
     """
     unwritten = Fixture(
-        id="tool-shadowing/placeholder",
-        attack_class="tool_shadowing",
+        id="tenant-leakage/placeholder",
+        attack_class="tenant_leakage",
         label="vulnerable",
         pair="placeholder",
         rationale="no detector exists for this class yet",

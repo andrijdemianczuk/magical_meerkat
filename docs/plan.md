@@ -8,7 +8,7 @@ Claude Code checks these off as work completes. Keep this current between sessio
 - [ ] MCP JSON-RPC client: connect, list tools, call tool
 - [x] Attack module interface (register, `analyze`, passive/active mode — see D-002)
 - [x] Attack 1: tool poisoning (passive; proven against its vulnerable/clean pair)
-- [ ] Attack 2: tool shadowing
+- [x] Attack 2: tool shadowing (passive, surface-scoped — see D-007)
 - [x] Attack 3: prompt injection via tool output (active; proven against its vulnerable/clean pair)
 - [ ] Attack 4: rug-pull (description changes after approval)
 - [ ] Plaintext report output
