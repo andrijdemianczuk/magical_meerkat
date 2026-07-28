@@ -52,6 +52,7 @@ with detectors, 199 tests, corpus TP 5 / FP 0 / TN 5 / FN 0 over 10 fixtures.
 Work is on `sprint-1`; a Phase 1 PR to `main` is prepared but may not be merged.
 
 Next candidates, roughly in order:
-1. Phase 2 scorecard — severity, remediation. An LLM judge belongs *here*, never in the detection path (D-009).
-2. Known gaps, each needing a control fixture before it earns a weight: transposition typosquatting (`send_meail`); a poisoning payload naming no resource; laundering a bare identifier by declaring an input with that name.
-3. `tenant_leakage` has no detector and renders as `NO CHECK`. Phase 3, with the proxy.
+1. **Interop check first** — scan a real off-the-shelf MCP server. The client and `testbed/server.py` share one reading of the spec, so the suite proves internal consistency, not interoperability.
+2. Phase 2 scorecard — severity, remediation. An LLM judge belongs *here*, never in the detection path (D-009).
+3. Known gaps, each needing a control fixture before it earns a weight: transposition typosquatting (`send_meail`); a poisoning payload naming no resource; laundering a bare identifier by declaring an input with that name.
+4. `tenant_leakage` has no detector and renders as `NO CHECK`. Phase 3, with the proxy.

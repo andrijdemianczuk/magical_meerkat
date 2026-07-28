@@ -16,10 +16,11 @@ Claude Code checks these off as work completes. Keep this current between sessio
 - [ ] **Ship: video 1 — "I attacked an MCP server and it worked"**
 
 ## Phase 2 — Governance scorecard + web view (weeks 7-12, ~30-40 hrs)
+- [ ] **Interop check against a server I did not write — do this first.** Point `sentinel scan --stdio` at any off-the-shelf MCP server running locally and confirm `initialize` + `tools/list` succeed. It does not need to be vulnerable. Both the client and `testbed/server.py` are built from the same reading of the spec, so they agree with each other and prove only internal consistency; a misreading would leave all 199 tests green. ~20 min, and it is the one gap the corpus structurally cannot catch.
 - [x] Map each attack to OWASP MCP Top 10 / Agentic Security Top 10 (catalog in `sentinel/owasp.py`, validated at registration)
-- [ ] Scorecard generator (severity, pass/fail, remediation)
+- [ ] Scorecard generator (severity, pass/fail, remediation) — an LLM judge belongs here, never in the detection path (D-009)
 - [ ] Minimal web dashboard
-- [x] docs/decisions.md started (D-001..D-008)
+- [x] docs/decisions.md started (D-001..D-009)
 - [ ] **Ship: video 2 — the governance scorecard**
 
 ## Phase 3 — Logging proxy + tenant isolation (weeks 13-16, ~20 hrs)
