@@ -47,9 +47,10 @@ Python 3.14.6 in `.venv`, created and managed by **uv** (not pyenv or Homebrew).
 ## Current plan
 See @docs/plan.md for the phased checklist. Update it every session.
 
-**State as of 2026-07-27.** Phase 1 complete except video 1. Four attack classes
-with detectors, 199 tests, corpus TP 5 / FP 0 / TN 5 / FN 0 over 10 fixtures.
-Work is on `sprint-1`; a Phase 1 PR to `main` is prepared but may not be merged.
+**State as of 2026-07-27.** Phase 1 complete except video 1, merged to `main`
+via PR #1; `sprint-1` is gone. Four attack classes with detectors, 199 tests,
+corpus TP 5 / FP 0 / TN 5 / FN 0 over 10 fixtures. Work continues on `sprint-2`,
+open and unmerged — accumulate Phase 2 commits there, then one PR.
 
 Next candidates, roughly in order:
 1. **Interop check first** — scan a real off-the-shelf MCP server. The client and `testbed/server.py` share one reading of the spec, so the suite proves internal consistency, not interoperability.
