@@ -90,10 +90,9 @@ class OutputInjection:
     name: str = "prompt_injection_via_output.response_instructions"
     attack_class: str = "prompt_injection_via_output"
     mode: Mode = "active"
-    # NOTE: placeholder identifiers — not yet reconciled against the published
-    # OWASP MCP Top 10 / Agentic Security Top 10. Do not ship in a report until
-    # verified.
-    owasp: tuple[str, ...] = ("MCP-02", "ASI-01")
+    # MCP06 (Intent Flow Subversion) is adjacent, but the mechanism here is
+    # untrusted content entering the model's context, which is MCP10.
+    owasp: tuple[str, ...] = ("MCP10:2025", "ASI01:2026")
 
     def analyze(self, tool) -> Finding:
         response = tool.response_text or ""

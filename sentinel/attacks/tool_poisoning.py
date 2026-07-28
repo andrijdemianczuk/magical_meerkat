@@ -73,7 +73,7 @@ class ToolPoisoning:
     name: str = "tool_poisoning.description_instructions"
     attack_class: str = "tool_poisoning"
     mode: Mode = "passive"
-    owasp: tuple[str, ...] = ("MCP-01", "ASI-01")
+    owasp: tuple[str, ...] = ("MCP03:2025", "ASI01:2026")
 
     def analyze(self, tool) -> Finding:
         description = tool.description or ""

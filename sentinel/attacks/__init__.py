@@ -19,6 +19,8 @@ import pkgutil
 from dataclasses import dataclass
 from typing import Literal, Protocol, runtime_checkable
 
+from sentinel import owasp
+
 Mode = Literal["passive", "active"]
 
 _REGISTRY: dict[str, Attack] = {}
@@ -75,9 +77,14 @@ class Attack(Protocol):
 
 
 def register(attack: Attack) -> Attack:
-    """Register an attack. Called at import time by each attack module."""
+    """Register an attack. Called at import time by each attack module.
+
+    OWASP identifiers are resolved here, so an invented or mistyped category
+    fails at import rather than surfacing in a governance report.
+    """
     if attack.name in _REGISTRY:
         raise ValueError(f"duplicate attack name {attack.name!r}")
+    owasp.validate(attack.owasp)
     _REGISTRY[attack.name] = attack
     return attack
 
