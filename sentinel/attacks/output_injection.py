@@ -77,7 +77,9 @@ _DESTINATION = re.compile(
 )
 # An override phrase sitting inside quotes reads as cited evidence rather than a
 # directive. Informational only — see the module docstring.
-_QUOTED = re.compile(r"[\"'“‘]([^\"'”’]{10,400})[\"'”’]", re.DOTALL)
+# Curly quotes are intentional: real ticket text is typed by humans and editors
+# autocorrect straight quotes, so matching only ASCII would miss the control.
+_QUOTED = re.compile(r"[\"'“‘]([^\"'”’]{10,400})[\"'”’]", re.DOTALL)  # noqa: RUF001
 
 
 def _instruction_like(text: str) -> str | None:

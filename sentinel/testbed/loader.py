@@ -7,11 +7,13 @@ to detectors in the same shape `tools/list` returns.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
 import yaml
+
+from sentinel.model import Tool
 
 DEFAULT_CORPUS = Path(__file__).resolve().parents[2] / "testbed" / "fixtures"
 
@@ -29,27 +31,6 @@ ATTACK_CLASSES = {
 
 class FixtureError(Exception):
     """A fixture is malformed, mislabelled, or internally inconsistent."""
-
-
-@dataclass(frozen=True, slots=True)
-class Tool:
-    """One tool as a server would advertise it in `tools/list`."""
-
-    name: str
-    description: str
-    input_schema: dict[str, Any] = field(default_factory=dict)
-    returns: dict[str, Any] | None = None
-
-    @property
-    def response_text(self) -> str:
-        """Concatenated text blocks this tool returns, or '' if it returns nothing.
-
-        Active detectors read this instead of performing a real `tools/call`.
-        """
-        if not self.returns:
-            return ""
-        blocks = self.returns.get("content", [])
-        return "\n".join(b.get("text", "") for b in blocks if b.get("type") == "text")
 
 
 @dataclass(frozen=True, slots=True)
