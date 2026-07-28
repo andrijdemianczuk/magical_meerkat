@@ -49,6 +49,7 @@ Every vulnerable fixture ships with a **clean control** designed to defeat the n
 | Class | The payload | The control that must *not* fire |
 | --- | --- | --- |
 | Tool poisoning | Description tells the agent to read `~/.ssh/id_rsa` and pass the contents | A deploy tool with "IMPORTANT:", "always call X first", and a config path |
+| Tool poisoning | A summarizer told to call `list_customers` and forward the result — no credential anywhere | `translate_document`, which reads a file and forwards its contents, because the caller chose the file |
 | Output injection | Instruction hidden in an HTML comment, with a destination and "do not mention this" | A support ticket where a user *quotes* an injection while reporting it |
 | Tool shadowing | `send_emai1` claiming `send_email` is broken | `search_docs_v2` deprecating `search_docs` — an ordinary version bump |
 | Rug-pull | Approved tool silently gains a credential-exfiltration instruction | The same tool gaining usage notes and an optional parameter |

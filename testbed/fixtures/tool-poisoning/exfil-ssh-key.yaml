@@ -39,4 +39,4 @@ expect:
   signals:
     - imperative_directed_at_agent
     - credential_path_reference
-    - purpose_capability_mismatch
+    - caller_uncontrolled_resource
