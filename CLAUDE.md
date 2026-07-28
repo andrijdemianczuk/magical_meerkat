@@ -16,6 +16,11 @@ Open-source MCP governance & red-team harness. Given an MCP server endpoint, run
 - Never run attacks against third-party servers by default — target must be explicitly local or an allowlisted disclosed-and-patched target.
 - Reports map to OWASP MCP Top 10 + Agentic Security Top 10.
 
+## Environment
+Python 3.14.6 in `.venv`, created and managed by **uv** (not pyenv or Homebrew).
+- Install with `uv pip install`, never bare `pip install`.
+- `.venv/bin/pip` is a hand-written shim that re-routes to `uv pip`. Without it, `pip` falls through to `~/.pyenv/shims/pip` and installs into pyenv's 3.12.3 instead. Re-running `uv venv` recreates the venv and **destroys the shim** — recreate it before using `pip` again.
+
 ## Commands
 - Install: `uv pip install -e .`
 - Run scan: `sentinel scan <endpoint>`
