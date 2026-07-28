@@ -87,7 +87,9 @@ def test_scan_over_the_wire_matches_the_in_process_result(fixture):
         tools = client.list_tools()
         if fixture.mode == "active":
             tools = [client.probe(t) for t in tools]
-        detected = any(f.detected for a in attacks for f in run(a, tools))
+        detected = any(
+            f.detected for a in attacks for f in run(a, tools, baseline=fixture.baseline)
+        )
 
     assert detected is expected.detected
     assert detected is fixture.expect_detect

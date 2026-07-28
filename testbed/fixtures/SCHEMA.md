@@ -4,9 +4,7 @@ A fixture declares one MCP server surface plus a ground-truth label. One file,
 one fixture, no central registry — same ethos as attack modules (D-001).
 
 Fixtures are **data, not code.** Payload text is inert YAML; nothing in a fixture
-executes. Rug-pull will eventually need a fixture whose surface *changes between
-scans*, which this format cannot express — deferred deliberately until the static
-corpus is stable, rather than bent into the schema now.
+executes.
 
 ## Fields
 
@@ -19,6 +17,7 @@ corpus is stable, rather than bent into the schema now.
 | `rationale` | yes | Why this label. On `clean` fixtures, state specifically which naive detector this is built to defeat. |
 | `mode` | yes | `passive` (detectable from `tools/list` alone) or `active` (requires invoking a tool). |
 | `tools` | yes | The declared tool surface — see below. |
+| `baseline` | rug-pull only | The surface as previously *approved*, same shape as `tools`. Rug-pull is decided by comparing the two, so a fixture without one is rejected. |
 | `canary` | active only | Unique inert token. See *Canaries*. |
 | `expect.detect` | yes | Whether a correct detector fires. Mirrors `label`, stated separately so it stays readable at the assertion site. |
 | `expect.signals` | no | Named signals that should contribute. Advisory — for debugging why a detector fired, not asserted strictly. |

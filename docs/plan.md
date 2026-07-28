@@ -10,7 +10,7 @@ Claude Code checks these off as work completes. Keep this current between sessio
 - [x] Attack 1: tool poisoning (passive; proven against its vulnerable/clean pair)
 - [x] Attack 2: tool shadowing (passive, surface-scoped — see D-007)
 - [x] Attack 3: prompt injection via tool output (active; proven against its vulnerable/clean pair)
-- [ ] Attack 4: rug-pull (description changes after approval)
+- [x] Attack 4: rug-pull (baseline-scoped; snapshot + diff in `sentinel/baseline.py`)
 - [ ] Plaintext report output
 - [ ] README v1 (Problem → Architecture → Run → Demo)
 - [ ] **Ship: video 1 — "I attacked an MCP server and it worked"**

@@ -45,6 +45,7 @@ class Fixture:
     mode: Mode
     tools: tuple[Tool, ...]
     expect_detect: bool
+    baseline: tuple[Tool, ...] | None = None
     expect_signals: tuple[str, ...] = ()
     canary: str | None = None
     source: Path | None = None
@@ -58,6 +59,18 @@ def _require(data: dict[str, Any], key: str, source: Path) -> Any:
     if key not in data:
         raise FixtureError(f"{source}: missing required field '{key}'")
     return data[key]
+
+
+def _tools(entries: list[dict[str, Any]]) -> tuple[Tool, ...]:
+    return tuple(
+        Tool(
+            name=t["name"],
+            description=t.get("description", ""),
+            input_schema=t.get("inputSchema", {}),
+            returns=t.get("returns"),
+        )
+        for t in entries
+    )
 
 
 def load_fixture(path: Path) -> Fixture:
@@ -92,17 +105,16 @@ def load_fixture(path: Path) -> Fixture:
     if mode == "active" and label == "vulnerable" and not canary:
         raise FixtureError(f"{path}: active vulnerable fixtures must declare a canary")
 
-    tools = tuple(
-        Tool(
-            name=t["name"],
-            description=t.get("description", ""),
-            input_schema=t.get("inputSchema", {}),
-            returns=t.get("returns"),
-        )
-        for t in _require(raw, "tools", path)
-    )
+    tools = _tools(_require(raw, "tools", path))
     if not tools:
         raise FixtureError(f"{path}: fixture declares no tools")
+
+    baseline = _tools(raw["baseline"]) if raw.get("baseline") else None
+    if attack_class == "rug_pull" and not baseline:
+        raise FixtureError(
+            f"{path}: rug_pull fixtures must declare a 'baseline' surface — "
+            "the attack is only visible relative to what was approved"
+        )
 
     return Fixture(
         id=_require(raw, "id", path),
@@ -113,6 +125,7 @@ def load_fixture(path: Path) -> Fixture:
         mode=mode,
         tools=tools,
         expect_detect=detect,
+        baseline=baseline,
         expect_signals=tuple(expect.get("signals", ())),
         canary=canary,
         source=path,

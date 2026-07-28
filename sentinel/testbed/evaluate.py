@@ -46,7 +46,9 @@ def evaluate(fixture: Fixture) -> Result | None:
     attacks = [a for a in for_class(fixture.attack_class) if a.mode == fixture.mode]
     if not attacks:
         return None
-    findings = tuple(f for a in attacks for f in run_attack(a, fixture.tools))
+    findings = tuple(
+        f for a in attacks for f in run_attack(a, fixture.tools, baseline=fixture.baseline)
+    )
     return Result(fixture, any(f.detected for f in findings), findings)
 
 

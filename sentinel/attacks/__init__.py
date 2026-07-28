@@ -14,12 +14,15 @@ Two axes describe every attack.
 
 `scope` splits by what the detector has to see (D-007):
 
-* `tool`    — one tool decides it. Poisoning lives entirely in one description.
-* `surface` — only the relationship between tools reveals it. A typosquatted
+* `tool`     — one tool decides it. Poisoning lives entirely in one description.
+* `surface`  — only the relationship between tools reveals it. A typosquatted
   name is invisible until you can see the tool it imitates.
+* `baseline` — needs a *previous* surface. A description is only "changed"
+  relative to one someone approved earlier, so a single scan can never decide
+  it.
 
-Use `run()` rather than calling `analyze`/`analyze_surface` directly; it
-dispatches on scope so callers do not have to.
+Use `run()` rather than calling the scope-specific methods directly; it
+dispatches so callers do not have to.
 """
 
 from __future__ import annotations
@@ -34,7 +37,7 @@ from sentinel import owasp
 from sentinel.model import Tool
 
 Mode = Literal["passive", "active"]
-Scope = Literal["tool", "surface"]
+Scope = Literal["tool", "surface", "baseline"]
 
 _REGISTRY: dict[str, Attack] = {}
 
@@ -101,14 +104,46 @@ class SurfaceAttack(Protocol):
     def analyze_surface(self, tools: Sequence[Tool]) -> list[Finding]: ...
 
 
-Attack = ToolAttack | SurfaceAttack
+@runtime_checkable
+class BaselineAttack(Protocol):
+    """An attack that compares the current surface against an approved one."""
+
+    name: str
+    attack_class: str
+    mode: Mode
+    scope: Literal["baseline"]
+    owasp: tuple[str, ...]
+
+    def analyze_change(
+        self, previous: Sequence[Tool], current: Sequence[Tool]
+    ) -> list[Finding]: ...
 
 
-def run(attack: Attack, tools: Sequence[Tool]) -> list[Finding]:
-    """Run one attack over a whole tool surface, dispatching on scope."""
-    if attack.scope == "surface":
-        return list(attack.analyze_surface(tools))
-    return [attack.analyze(tool) for tool in tools]
+Attack = ToolAttack | SurfaceAttack | BaselineAttack
+
+
+def run(
+    attack: Attack,
+    tools: Sequence[Tool],
+    *,
+    baseline: Sequence[Tool] | None = None,
+) -> list[Finding]:
+    """Run one attack against a surface, dispatching on scope.
+
+    A baseline-scoped attack with no baseline returns nothing rather than
+    raising: on a first scan there is genuinely nothing to compare against, and
+    that is not an error. Callers that need to distinguish "no baseline" from
+    "no findings" should check for one themselves.
+    """
+    match attack.scope:
+        case "surface":
+            return list(attack.analyze_surface(tools))
+        case "baseline":
+            if baseline is None:
+                return []
+            return list(attack.analyze_change(baseline, tools))
+        case _:
+            return [attack.analyze(tool) for tool in tools]
 
 
 def register(attack: Attack) -> Attack:
@@ -119,8 +154,8 @@ def register(attack: Attack) -> Attack:
     """
     if attack.name in _REGISTRY:
         raise ValueError(f"duplicate attack name {attack.name!r}")
-    if attack.scope not in ("tool", "surface"):
-        raise ValueError(f"{attack.name}: scope must be 'tool' or 'surface'")
+    if attack.scope not in ("tool", "surface", "baseline"):
+        raise ValueError(f"{attack.name}: scope must be 'tool', 'surface', or 'baseline'")
     owasp.validate(attack.owasp)
     _REGISTRY[attack.name] = attack
     return attack
@@ -146,6 +181,7 @@ def for_class(attack_class: str) -> list[Attack]:
 
 __all__ = [
     "Attack",
+    "BaselineAttack",
     "Finding",
     "Signal",
     "SurfaceAttack",
