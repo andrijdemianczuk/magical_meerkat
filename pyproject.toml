@@ -1,0 +1,40 @@
+[project]
+name = "mcp-sentinel"
+version = "0.0.1"
+description = "MCP governance and red-team harness"
+requires-python = ">=3.14"
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+sentinel = "sentinel.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["sentinel"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+# flake8-bandit ("S") is on deliberately: this repo spawns subprocesses, opens
+# URLs, and parses untrusted text. Suppressions must be argued for in a comment.
+select = ["E", "F", "W", "I", "UP", "B", "S", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert on attack payloads and spin up loopback servers.
+"tests/*" = ["S101", "S104", "S603", "S607"]
