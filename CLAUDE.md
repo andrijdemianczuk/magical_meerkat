@@ -3,6 +3,8 @@
 @~/portfolio/shared-context.md
 
 ## What this repo is
+**Codename `magical_meerkat`** — the GitHub repo, local directory, and venv prompt all use it. "MCP Sentinel" is the product name (and how `~/portfolio/shared-context.md` refers to this project); they are the same thing.
+
 Open-source MCP governance & red-team harness. Given an MCP server endpoint, run known attack classes and emit an OWASP-mapped governance report. Proxy mode logs every request/response attributed to user+session.
 
 ## Architecture (see @docs/architecture.md)
