@@ -30,3 +30,15 @@ Format per entry: **Decision** / **Context** / **Alternatives rejected** / **Tra
 - **Alternatives rejected:** Boolean `detect()` (no evidence trail, no tuning surface); dropping non-discriminating patterns (report says "detected" with nothing to show).
 - **Tradeoff accepted:** Threshold and weights are hand-tuned against a tiny corpus and will need refitting as it grows. A test asserts both signals stay at weight 0, so raising one fails loudly.
 
+## D-005: Mitigating signals are never negative
+- **Decision:** Signals that argue *against* a finding are recorded at weight 0, never below it. `override_in_quotation` explains why the benign control did not fire; it cannot reduce anyone's score.
+- **Context:** The control's injection phrase sits inside quotation marks because a user is citing it in a bug report. That is real evidence and belongs in the report. But any signal that subtracts is a published bypass — an attacker wraps the payload in quotes and the score drops below threshold.
+- **Alternatives rejected:** Negative weights (directly exploitable); dropping the mitigator (report shows a non-detection with no explanation).
+- **Tradeoff accepted:** Mitigators cannot rescue a false positive on their own, so precision has to come from the positive signals being specific enough. A test wraps the payload in quotes and asserts it is still detected.
+
+## D-006: Detectors may not key on testbed artifacts
+- **Decision:** No detector may match the canary token or anything else that exists only in fixtures. Enforced by a test that strips the canary and asserts detection is unchanged.
+- **Context:** The canary is the most reliable string in the corpus, so keying on it is the path of least resistance — and it would score 100% while detecting nothing on a real server. This failure is silent: the corpus goes green and the confusion matrix looks excellent.
+- **Alternatives rejected:** Code review alone (this is exactly the shortcut a tired evening takes); randomising canaries per run (raises the cost of cheating without preventing it).
+- **Tradeoff accepted:** One extra test per active attack, and the canary's payoff is deferred until an agent-in-the-loop harness exists.
+

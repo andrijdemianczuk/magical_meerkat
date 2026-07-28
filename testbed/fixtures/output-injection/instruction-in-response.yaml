@@ -59,6 +59,6 @@ tools:
 expect:
   detect: true
   signals:
-    - instruction_block_in_tool_output
+    - hidden_channel_payload
     - concealment_request
     - cross_tool_direction

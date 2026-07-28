@@ -26,7 +26,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from sentinel.attacks import Finding, Signal, register
+from sentinel.attacks import Finding, Mode, Signal, register
+from sentinel.attacks._text import first_match, sentences
 
 THRESHOLD = 3
 
@@ -67,34 +68,18 @@ _COERCIVE = re.compile(
 )
 
 
-def _sentences(text: str) -> list[str]:
-    """Split into sentences, collapsing wrapped lines first.
-
-    Descriptions are hard-wrapped, so a single instruction routinely spans a
-    newline. Splitting on lines would cut sentences in half and lose the
-    verb/noun/argument co-occurrence this detector depends on.
-    """
-    normalized = re.sub(r"\s+", " ", text).strip()
-    return [s for s in re.split(r"(?<=[.!?])\s+", normalized) if s]
-
-
-def _first_match(pattern: re.Pattern[str], text: str) -> str | None:
-    m = pattern.search(text)
-    return m.group(0) if m else None
-
-
 @dataclass(frozen=True, slots=True)
 class ToolPoisoning:
     name: str = "tool_poisoning.description_instructions"
     attack_class: str = "tool_poisoning"
-    mode: str = "passive"
+    mode: Mode = "passive"
     owasp: tuple[str, ...] = ("MCP-01", "ASI-01")
 
     def analyze(self, tool) -> Finding:
         description = tool.description or ""
         signals: list[Signal] = []
 
-        if hit := _first_match(_CREDENTIAL_PATH, description):
+        if hit := first_match(_CREDENTIAL_PATH, description):
             signals.append(
                 Signal(
                     "credential_path_reference",
@@ -105,7 +90,7 @@ class ToolPoisoning:
 
         # Co-occurrence is required *within one sentence*: a description may
         # legitimately mention contents somewhere and an argument elsewhere.
-        for sentence in _sentences(description):
+        for sentence in sentences(description):
             if (
                 _TRANSFER_VERB.search(sentence)
                 and (noun := _CONTENTS_NOUN.search(sentence))
@@ -120,12 +105,12 @@ class ToolPoisoning:
                 )
                 break
 
-        if hit := _first_match(_AGENT_IMPERATIVE, description):
+        if hit := first_match(_AGENT_IMPERATIVE, description):
             signals.append(
                 Signal("imperative_directed_at_agent", 0, f"agent-directed instruction {hit!r}")
             )
 
-        if hit := _first_match(_COERCIVE, description):
+        if hit := first_match(_COERCIVE, description):
             signals.append(Signal("coercive_framing", 0, f"coercive framing {hit!r}"))
 
         score = sum(s.weight for s in signals)

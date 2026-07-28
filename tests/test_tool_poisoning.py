@@ -10,7 +10,7 @@ import pytest
 from sentinel.attacks import registry
 from sentinel.attacks.tool_poisoning import ToolPoisoning
 from sentinel.testbed.evaluate import evaluate
-from sentinel.testbed.loader import load_corpus
+from sentinel.testbed.loader import Fixture, Tool, load_corpus
 
 ATTACK = ToolPoisoning()
 
@@ -80,8 +80,20 @@ def test_corpus_evaluation_is_clean_for_covered_fixtures():
             assert result.correct, f"{f.id}: expected detect={f.expect_detect}"
 
 
-def test_active_fixtures_have_no_passive_detector_yet():
-    """Uncovered classes must stay visibly uncovered, not silently pass."""
-    active = [f for f in load_corpus() if f.mode == "active"]
-    assert active
-    assert all(evaluate(f) is None for f in active)
+def test_uncovered_attack_class_is_not_scored():
+    """An attack class with no detector reports as uncovered, never as a pass.
+
+    Otherwise a class nobody has written a detector for contributes 0 failures
+    and reads as success.
+    """
+    unwritten = Fixture(
+        id="tool-shadowing/placeholder",
+        attack_class="tool_shadowing",
+        label="vulnerable",
+        pair="placeholder",
+        rationale="no detector exists for this class yet",
+        mode="passive",
+        tools=(Tool(name="t", description="d"),),
+        expect_detect=True,
+    )
+    assert evaluate(unwritten) is None

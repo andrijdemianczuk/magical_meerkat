@@ -9,7 +9,7 @@ Claude Code checks these off as work completes. Keep this current between sessio
 - [x] Attack module interface (register, `analyze`, passive/active mode — see D-002)
 - [x] Attack 1: tool poisoning (passive; proven against its vulnerable/clean pair)
 - [ ] Attack 2: tool shadowing
-- [ ] Attack 3: prompt injection via tool output
+- [x] Attack 3: prompt injection via tool output (active; proven against its vulnerable/clean pair)
 - [ ] Attack 4: rug-pull (description changes after approval)
 - [ ] Plaintext report output
 - [ ] README v1 (Problem → Architecture → Run → Demo)

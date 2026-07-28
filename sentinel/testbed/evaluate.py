@@ -68,11 +68,16 @@ def run(root: Path | None = None) -> int:
         mark = "ok " if r.correct else "FAIL"
         print(f"{mark} {r.outcome}  {r.fixture.id:<46} {r.fixture.mode}")
         for f in r.findings:
+            if not f.signals:
+                print(f"      {f.tool}: no signals")
+                continue
+            print(
+                f"      {f.tool}: score {f.score}/{f.threshold} -> detected={f.detected}"
+            )
             for s in f.fired:
                 print(f"        + [{s.weight}] {s.name}: {s.evidence}")
             for s in f.informational:
                 print(f"          [0] {s.name}: {s.evidence}")
-            print(f"        score {f.score} / threshold {f.threshold} -> detected={f.detected}")
 
     counts = {k: sum(1 for r in results if r.outcome == k) for k in ("TP", "FP", "TN", "FN")}
     tp, fp, tn, fn = counts["TP"], counts["FP"], counts["TN"], counts["FN"]
